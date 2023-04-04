@@ -14,17 +14,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  /* background-image: url(./assets/media/mesh-gradient.png); */
-  /* set bg opacity to 50% */
-
+  background-image: url(./assets/media/flare_light.avif);
   background-size: cover;
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: top;
   background-color: rgb(15, 6, 20);
-}
-
-.bgFlare {
 }
 
 @layer base {
