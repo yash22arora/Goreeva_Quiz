@@ -41,7 +41,7 @@ const BasicsForm: React.FC = () => {
         <label className="text-xl font-semibold">Time Limit (in mins)</label>
         <Input type="number" placeholder="eg: 20" className="w-full" />
       </div>
-      <Button type="submit" className="self-end px-4 bg-violet-800">
+      <Button type="submit" className="self-end px-8 bg-violet-800">
         Next
       </Button>
     </form>
