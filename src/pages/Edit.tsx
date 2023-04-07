@@ -2,35 +2,11 @@ import { useEffect, useState } from "react";
 import { IQuestion } from "../components/Edit/types";
 import Question from "../components/Edit/Question";
 import ShortUniqueId from "short-unique-id";
+import { DUMMY_QUESTIONS } from "../constants";
 
 const Edit: React.FC = () => {
   const uid = new ShortUniqueId({ length: 10 });
-  const [questions, setQuestions] = useState<IQuestion[]>([
-    {
-      prompt: "What is the capital of India?",
-      answers: ["Delhi", "Mumbai", "Kolkata", "Chennai"],
-      correctAnswer: "",
-      id: uid(),
-    },
-    {
-      prompt: "Which is not a neighbouring country to India?",
-      answers: ["Pakistan", "Nepal", "China", "Japan"],
-      correctAnswer: "",
-      id: uid(),
-    },
-    {
-      prompt: "Which is the largest country in the world?",
-      answers: ["Russia", "China", "India", "USA"],
-      correctAnswer: "",
-      id: uid(),
-    },
-    {
-      prompt: "Which is the largest city in the world?",
-      answers: ["Tokyo", "New York", "Delhi", "Shanghai"],
-      correctAnswer: "",
-      id: uid(),
-    },
-  ]);
+  const [questions, setQuestions] = useState<IQuestion[]>(DUMMY_QUESTIONS);
 
   const [errors, setErrors] = useState<{
     [key: string]: string;

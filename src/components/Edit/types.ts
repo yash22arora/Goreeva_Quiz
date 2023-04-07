@@ -11,6 +11,7 @@ export interface IQuestionProps {
   onDelete?: (id: string) => void;
   isEdit?: boolean;
   error?: string | undefined;
+  onSelectAnswer?: (answer: string) => void;
 }
 
 export interface IOptionProps {

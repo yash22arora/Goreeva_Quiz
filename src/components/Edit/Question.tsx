@@ -3,13 +3,21 @@ import { IQuestion, IQuestionProps } from "./types";
 import Option from "./Option";
 
 const Question: React.FC<IQuestionProps> = (props) => {
-  const { question, isEdit = false, onEdit, onDelete, error } = props;
+  const {
+    question,
+    isEdit = false,
+    onEdit,
+    onDelete,
+    error,
+    onSelectAnswer,
+  } = props;
   const [answers, setAnswers] = useState<IQuestion["answers"]>(
     question.answers
   );
   const [correctAnswer, setCorrectAnswer] = useState<
     IQuestion["correctAnswer"] | null
   >(isEdit ? null : question.correctAnswer);
+  const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [prompt, setPrompt] = useState<IQuestion["prompt"]>(question.prompt);
 
   const onEditOption = (option: string, id: number) => {
@@ -17,6 +25,13 @@ const Question: React.FC<IQuestionProps> = (props) => {
     newAnswers[id] = option;
     setAnswers(newAnswers);
   };
+
+  useEffect(() => {
+    setAnswers(question.answers);
+    setCorrectAnswer(isEdit ? null : question.correctAnswer);
+    setPrompt(question.prompt);
+    setSelectedAnswer("");
+  }, [question]);
 
   useEffect(() => {
     onEdit &&
@@ -47,9 +62,10 @@ const Question: React.FC<IQuestionProps> = (props) => {
             <Option
               option={answer}
               id={index}
-              selected={correctAnswer === answer}
+              selected={selectedAnswer === answer}
               onSelect={() => {
-                !isEdit && setCorrectAnswer(answer);
+                !isEdit && setSelectedAnswer(answer);
+                !isEdit && onSelectAnswer && onSelectAnswer(answer);
               }}
               isEdit={isEdit}
               onEdit={(option) => onEditOption(option, index)}
