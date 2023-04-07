@@ -86,10 +86,6 @@ const Edit: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(questions);
-  }, [questions]);
-
   return (
     <div className="w-full h-full flex flex-col max-w-5xl mx-auto">
       <div className="" id="quizHeader"></div>
