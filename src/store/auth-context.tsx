@@ -1,23 +1,25 @@
-import { signOut } from "firebase/auth";
+import { User, signOut } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../firebase.config";
+import { useHistory } from "react-router-dom";
 
 const AuthContext = React.createContext({
-  user: {},
+  user: null as User | null,
   isLoggedIn: false,
-  login: (user: any) => {},
+  login: (user: User) => {},
   logout: () => {},
 });
 
 export const AuthContextProvider = (props: any) => {
+  const history = useHistory();
   const initialUser = localStorage.getItem("user");
 
-  const [user, setUser] = useState(
+  const [user, setUser] = useState<User | null>(
     !!initialUser ? JSON.parse(initialUser) : null
   );
 
   const userIsLoggedIn = !!user;
-  const loginHandler = (user: any) => {
+  const loginHandler = (user: User) => {
     setUser(user);
     localStorage.setItem("user", JSON.stringify(user));
   };
@@ -27,6 +29,7 @@ export const AuthContextProvider = (props: any) => {
       .then(() => {
         setUser(null);
         localStorage.removeItem("user");
+        history.push("/");
       })
       .catch((error) => {
         alert(error);
@@ -46,3 +49,5 @@ export const AuthContextProvider = (props: any) => {
     </AuthContext.Provider>
   );
 };
+
+export default AuthContext;
