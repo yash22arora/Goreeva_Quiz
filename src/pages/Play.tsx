@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { TQuizData } from "../components/Create/BasicsForm/types";
 import { DUMMY_QUESTIONS } from "../constants";
 import Question from "../components/Edit/Question";
+import ProgressBar from "../components/common/ProgressBar/ProgressBar";
 
 const PlayQuiz: React.FC = () => {
   const quizData: TQuizData = useMemo(
@@ -11,7 +12,7 @@ const PlayQuiz: React.FC = () => {
         "lorem ipsum dolor sit amet nunc nunc lorem ipsum blah blah blah",
       correctMarks: 5,
       incorrectMarks: -2,
-      timeLimit: 30,
+      timeLimit: 1,
       id: "dfveveevv",
       questions: DUMMY_QUESTIONS,
     }),
@@ -27,7 +28,13 @@ const PlayQuiz: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
+
+  const maxMarks = quizData.questions.length * quizData.correctMarks;
+
   useEffect(() => {
+    if (timeLeft === 0) {
+      handleFinish();
+    }
     const timer = setTimeout(() => {
       setTimeLeft(timeLeft - 1);
     }, 1000);
@@ -62,8 +69,8 @@ const PlayQuiz: React.FC = () => {
     return new Promise<number>((resolve, reject) => {
       setTimeout(() => {}, 1000);
       let score = 0;
-      quizData.questions.forEach((question, index) => {
-        if (question.correctAnswer === selectedAnswers[index]) {
+      selectedAnswers.forEach((selectedAnswer, index) => {
+        if (selectedAnswer === quizData.questions[index].correctAnswer) {
           score += quizData.correctMarks;
         } else {
           score += quizData.incorrectMarks;
@@ -75,11 +82,11 @@ const PlayQuiz: React.FC = () => {
 
   const handleFinish = () => {
     setIsLoading(true);
+    setQuizCompleteTime(timeLeft);
     evaluateQuiz().then((score) => {
       setIsQuizComplete(true);
       setFinalScore(score);
       setIsLoading(false);
-      setQuizCompleteTime(timeLeft);
     });
   };
 
@@ -104,23 +111,60 @@ const PlayQuiz: React.FC = () => {
           </span>
         </div>
       </div>
-      <h1 className="text-7xl font-semibold ">{formatTime(timeLeft)}</h1>
-      <div className="my-10 w-full max-w-4xl">
-        <Question
-          question={quizData.questions[currentQuestion]}
-          isEdit={false}
-          onSelectAnswer={(option) =>
-            handleSelectAnswer(option, currentQuestion)
-          }
-        />
-        <button
-          className="cursor-pointer mt-4 flex flex-row items-center justify-center p-4 w-full bg-violet-600 hover:bg-opacity-70 bg-opacity-50 text-gray-300 font-bold text-2xl disabled:bg-slate-500 disabled:cursor-not-allowed"
-          onClick={isLastQuestion ? handleFinish : handleNext}
-          disabled={selectedAnswers[currentQuestion] === undefined}
-        >
-          {isLastQuestion ? "Finish Quiz" : "Next Question"}
-        </button>
-      </div>
+      {!isQuizComplete ? (
+        <>
+          <h1 className="text-7xl font-semibold mb-3">
+            {formatTime(timeLeft)}
+          </h1>
+          <div className="w-full my-3 max-w-4xl">
+            <ProgressBar
+              completed={currentQuestion}
+              total={quizData.questions.length}
+            />
+          </div>
+          <div className="my-10 w-full max-w-4xl">
+            <Question
+              question={quizData.questions[currentQuestion]}
+              isEdit={false}
+              onSelectAnswer={(option) =>
+                handleSelectAnswer(option, currentQuestion)
+              }
+            />
+            <button
+              className="cursor-pointer mt-4 flex flex-row items-center justify-center p-4 w-full bg-violet-600 hover:bg-opacity-70 bg-opacity-50 text-gray-300 font-bold text-2xl disabled:bg-slate-500 disabled:cursor-not-allowed"
+              onClick={isLastQuestion ? handleFinish : handleNext}
+              disabled={selectedAnswers[currentQuestion] === undefined}
+            >
+              {isLastQuestion ? "Finish Quiz" : "Next Question"}
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center mt-12 text-3xl">
+          <h1 className="text-7xl font-semibold mb-6">
+            {quizCompleteTime > 0
+              ? finalScore > maxMarks / 2
+                ? "Good Job!"
+                : "You can do better!"
+              : "Time's Up!"}
+          </h1>
+          <span className="font-semibold mb-4">
+            Questions attempted : {selectedAnswers.length} /{" "}
+            {quizData.questions.length}
+          </span>
+          <span className="font-semibold">
+            Final Score : {finalScore} / {maxMarks}
+          </span>
+          <button
+            className="cursor-pointer mt-12 flex flex-row items-center justify-center p-4 w-full bg-violet-600 hover:bg-opacity-70 bg-opacity-50 text-gray-300 font-bold text-2xl disabled:bg-slate-500 disabled:cursor-not-allowed"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      )}
     </div>
   );
 };
