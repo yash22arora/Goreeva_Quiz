@@ -1,5 +1,5 @@
 export interface IQuestion {
-  id: number;
+  id: string;
   prompt: string;
   answers: string[];
   correctAnswer: string;
@@ -8,8 +8,9 @@ export interface IQuestion {
 export interface IQuestionProps {
   question: IQuestion;
   onEdit?: (question: IQuestion) => void;
-  onDelete?: (id: number) => void;
+  onDelete?: (id: string) => void;
   isEdit?: boolean;
+  error?: string | undefined;
 }
 
 export interface IOptionProps {
@@ -18,4 +19,5 @@ export interface IOptionProps {
   selected?: boolean;
   onSelect?: () => void;
   isEdit?: boolean;
+  onEdit?: (option: string) => void;
 }
