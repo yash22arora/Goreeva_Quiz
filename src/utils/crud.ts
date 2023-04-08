@@ -18,7 +18,6 @@ export const updateQuestionsonFirestore = async (
   quizId: string,
   questions: IQuestion[]
 ) => {
-  console.log(quizId, questions);
   const docRef = doc(db, "quizzes", quizId);
   return updateDoc(docRef, { questions: questions });
 };

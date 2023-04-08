@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../../firebase.config";
 import { useHistory, useLocation } from "react-router-dom";
+import customToast from "../common/CustomToast/CustomToast";
 
 const LoginIcon = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,6 +33,7 @@ const LoginIcon = () => {
         // IdP data available using getAdditionalUserInfo(result)
         // ...
         setIsMenuOpen(false);
+        customToast("Logged in successfully");
       })
       .catch((error) => {
         // Handle Errors here.
@@ -72,12 +74,12 @@ const LoginIcon = () => {
       );
     else
       return (
-        <div className="p-3">
+        <div className="p-2 w-full">
           <Button
-            className="w-48 mt-0 flex flex-row items-center text-base justify-center gap-3"
+            className="w-max mt-0 flex flex-row items-center text-base font-semibold justify-center gap-3"
             onClick={handleLogin}
           >
-            <FcGoogle />
+            <FcGoogle size={24} />
             Sign in with Google
           </Button>
         </div>
@@ -94,7 +96,7 @@ const LoginIcon = () => {
           }}
         ></div>
       )}
-      <div className="absolute cursor-pointer -right-6 -top-6 ">
+      <div className="absolute cursor-pointer right-6 top-6 ">
         <div
           onClick={() => {
             setIsMenuOpen(!isMenuOpen);
@@ -104,7 +106,7 @@ const LoginIcon = () => {
           <BiUser size={40} />
         </div>
         {isMenuOpen && (
-          <div className="absolute top-12 right-0 border-[0.5px] border-gray-900 bg-slate-700 backdrop-blur-md bg-opacity-30 min-w-[80px] text-gray-300">
+          <div className="absolute top-12 right-0 border-[0.5px] border-gray-900 bg-slate-700 backdrop-blur-md bg-opacity-30 min-w-[80px] text-gray-300 w-max">
             <MenuContent />
           </div>
         )}

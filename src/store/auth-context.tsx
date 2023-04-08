@@ -2,6 +2,7 @@ import { User, signOut } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../firebase.config";
 import { useHistory } from "react-router-dom";
+import customToast from "../components/common/CustomToast/CustomToast";
 
 const AuthContext = React.createContext({
   user: null as User | null,
@@ -29,6 +30,7 @@ export const AuthContextProvider = (props: any) => {
       .then(() => {
         setUser(null);
         localStorage.removeItem("user");
+        customToast("Logged out successfully");
         history.push("/");
       })
       .catch((error) => {

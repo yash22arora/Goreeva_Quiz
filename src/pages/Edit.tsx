@@ -9,6 +9,7 @@ import {
   updateQuestionsonFirestore,
 } from "../utils/crud";
 import { TQuizData } from "../components/Create/BasicsForm/types";
+import customToast from "../components/common/CustomToast/CustomToast";
 
 const Edit: React.FC = () => {
   const uid = new ShortUniqueId({ length: 10 });
@@ -87,7 +88,7 @@ const Edit: React.FC = () => {
       };
       updateQuestionsonFirestore(quizId, questions)
         .then((res) => {
-          console.log("Saved!");
+          customToast("Questions updated successfully");
           setIsLoading(false);
         })
         .catch((err) => {
@@ -98,6 +99,7 @@ const Edit: React.FC = () => {
 
   const copyCodeToClipboard = () => {
     navigator.clipboard.writeText(quizId);
+    customToast("Quiz ID copied to clipboard");
   };
 
   return (

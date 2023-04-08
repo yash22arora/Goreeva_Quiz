@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Button from "../../common/Button/Button";
 import Input from "../../common/Input/Input";
 import { TQuizData } from "./types";
@@ -7,9 +7,12 @@ import { CgSpinner } from "react-icons/cg";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebase.config";
 import { useHistory } from "react-router-dom";
+import customToast from "../../common/CustomToast/CustomToast";
+import AuthContext from "../../../store/auth-context";
 
 const BasicsForm: React.FC = () => {
   const uid = new ShortUniqueId({ length: 6 });
+  const authCtx = useContext(AuthContext);
   const [quizData, setQuizData] = useState<TQuizData>({
     quizName: "",
     quizDescription: "",
@@ -18,7 +21,7 @@ const BasicsForm: React.FC = () => {
     timeLimit: 0,
     id: uid(),
     questions: [],
-    ownerUid: auth.currentUser?.uid || "",
+    ownerUid: "",
   });
   const history = useHistory();
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,19 +40,24 @@ const BasicsForm: React.FC = () => {
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(auth.currentUser?.uid);
-    setIsLoading(true);
-    e.preventDefault();
-    setDoc(doc(db, "quizzes", quizData.id), quizData)
-      .then((res) => {
-        setIsLoading(false);
-        console.log(res);
-        history.push(`/edit/${quizData.id}`);
+    if (authCtx.user) {
+      console.log(auth.currentUser?.uid);
+      setIsLoading(true);
+      e.preventDefault();
+      setDoc(doc(db, "quizzes", quizData.id), {
+        ...quizData,
+        ownerUid: authCtx.user.uid,
       })
-      .catch((err) => {
-        setIsLoading(false);
-        console.error(err);
-      });
+        .then((res) => {
+          setIsLoading(false);
+          customToast("Quiz created successfully");
+          history.push(`/edit/${quizData.id}`);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          console.error(err);
+        });
+    }
   };
 
   return (
