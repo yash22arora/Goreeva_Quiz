@@ -154,7 +154,15 @@ const Edit: React.FC = () => {
         >
           Add Question
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto flex flex-row items-center gap-6">
+          <button
+            className="bg-orange-300 text-slate-800 font-bold text-2xl px-6 py-2 rounded-sm flex flex-row items-center gap-2"
+            onClick={() => {
+              history.push(`/play/${quizId}`);
+            }}
+          >
+            Preview
+          </button>
           <button
             className="bg-violet-600 text-gray-300 font-bold text-2xl px-6 py-2 rounded-sm flex flex-row items-center gap-2"
             onClick={onSave}

@@ -1,4 +1,13 @@
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { auth, db } from "../firebase.config";
 import { TQuizData } from "../components/Create/BasicsForm/types";
 import { IQuestion } from "../components/Edit/types";
@@ -20,4 +29,9 @@ export const updateQuestionsonFirestore = async (
 ) => {
   const docRef = doc(db, "quizzes", quizId);
   return updateDoc(docRef, { questions: questions });
+};
+
+export const getAllQuizzes = async (uid: string) => {
+  const q = query(collection(db, "quizzes"), where("ownerUid", "==", uid));
+  return getDocs(q);
 };

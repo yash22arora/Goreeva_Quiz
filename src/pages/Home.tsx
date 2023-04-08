@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import Input from "../components/common/Input/Input";
 import Button from "../components/common/Button/Button";
+import QuizList from "../components/Edit/QuizList/QuizList";
 
 const Home: React.FC = () => {
   const [quizId, setQuizId] = useState<string>("");
@@ -12,7 +13,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center text-gray-300 py-24">
+    <div className="flex flex-col items-center text-gray-300 pt-24">
       <h1 className="text-7xl font-semibold text-gray-300">
         Welcome to Quizzy 📝
       </h1>
@@ -44,6 +45,9 @@ const Home: React.FC = () => {
         >
           Create
         </Button>
+      </div>
+      <div className="w-full max-w-5xl text-center mt-24">
+        <QuizList />
       </div>
     </div>
   );
