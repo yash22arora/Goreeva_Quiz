@@ -81,7 +81,6 @@ const Question: React.FC<IQuestionProps> = (props) => {
             <select
               className="rounded-lg p-2 ml-4 bg-[rgb(113,79,168)] bg-opacity-60"
               onChange={(e) => {
-                console.log(e.target.value);
                 setCorrectAnswer(e.target.value);
               }}
               value={correctAnswer}

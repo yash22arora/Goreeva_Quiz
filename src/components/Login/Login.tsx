@@ -64,6 +64,17 @@ const LoginIcon = () => {
           <span className="p-2 px-4 border-b border-slate-700 w-full cursor-default font-bold">
             {authCtx.user?.displayName}
           </span>
+          {pathname !== "/" && (
+            <span
+              className="p-2 px-4 w-full hover:bg-slate-500 hover:bg-opacity-30"
+              onClick={() => {
+                setIsMenuOpen(false);
+                history.push("/");
+              }}
+            >
+              Home
+            </span>
+          )}
           <span
             className="p-2 px-4 w-full hover:bg-slate-500 hover:bg-opacity-30"
             onClick={handleLogout}

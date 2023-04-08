@@ -23,13 +23,13 @@ const Home: React.FC = () => {
           <Input
             value={quizId}
             onChange={(e) => setQuizId(e.target.value)}
-            maxLength={10}
+            maxLength={6}
             placeholder="Enter quiz ID"
             className="px-4 py-3"
           />
           <Button
             className="px-6 py-3 bg-lime-300 disabled:bg-slate-500 disabled:cursor-not-allowed font-semibold text-slate-800 disabled:text-gray-300"
-            disabled={quizId.length !== 10}
+            disabled={quizId.length !== 6}
             onClick={handleStart}
           >
             Start

@@ -3,25 +3,34 @@ import { TQuizData } from "../components/Create/BasicsForm/types";
 import { DUMMY_QUESTIONS } from "../constants";
 import Question from "../components/Edit/Question";
 import ProgressBar from "../components/common/ProgressBar/ProgressBar";
+import { useHistory, useParams } from "react-router-dom";
+import { getQuiZDatafromFirestore } from "../utils/crud";
+import customToast from "../components/common/CustomToast/CustomToast";
 
 const PlayQuiz: React.FC = () => {
-  const quizData: TQuizData = useMemo(
-    () => ({
-      quizName: "Test Quiz",
-      quizDescription:
-        "lorem ipsum dolor sit amet nunc nunc lorem ipsum blah blah blah",
-      correctMarks: 5,
-      incorrectMarks: -2,
-      timeLimit: 1,
-      id: "dfveveevv",
-      questions: DUMMY_QUESTIONS,
-      ownerUid: "123",
-    }),
-    []
-  );
+  const [quizData, setQuizData] = useState<TQuizData>();
+  const { quizId } = useParams<{ quizId: string }>();
+  const history = useHistory();
+
+  useEffect(() => {
+    getQuiZDatafromFirestore(quizId).then((res) => {
+      if (res) {
+        setQuizData({
+          ...res,
+          correctMarks: res.correctMarks as number,
+          incorrectMarks: res.incorrectMarks as number,
+        });
+        setTimeLeft(res.timeLimit * 60);
+        setMaxMarks(res.questions.length * res.correctMarks);
+      } else {
+        customToast("Quiz not found :(");
+        history.push("/");
+      }
+    });
+  }, [quizId]);
 
   // create timer from timeLimit
-  const [timeLeft, setTimeLeft] = useState(quizData.timeLimit * 60);
+  const [timeLeft, setTimeLeft] = useState(60);
   const [quizCompleteTime, setQuizCompleteTime] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isQuizComplete, setIsQuizComplete] = useState(false);
@@ -29,8 +38,7 @@ const PlayQuiz: React.FC = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [isLastQuestion, setIsLastQuestion] = useState(false);
-
-  const maxMarks = quizData.questions.length * quizData.correctMarks;
+  const [maxMarks, setMaxMarks] = useState(0);
 
   useEffect(() => {
     if (timeLeft === 0) {
@@ -43,6 +51,7 @@ const PlayQuiz: React.FC = () => {
   }, [timeLeft]);
 
   useEffect(() => {
+    if (!quizData) return;
     if (currentQuestion === quizData.questions.length - 1) {
       setIsLastQuestion(true);
     }
@@ -55,9 +64,10 @@ const PlayQuiz: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (currentQuestion < quizData.questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    }
+    if (quizData)
+      if (currentQuestion < quizData.questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      }
   };
 
   const handleSelectAnswer = (option: string, id: number) => {
@@ -67,14 +77,17 @@ const PlayQuiz: React.FC = () => {
   };
 
   const evaluateQuiz = async () => {
+    if (!quizData) return Promise.resolve(0);
     return new Promise<number>((resolve, reject) => {
       setTimeout(() => {}, 1000);
-      let score = 0;
+      let score: number = 0;
+      const correctMarks = quizData.correctMarks;
+      const incorrectMarks = quizData.incorrectMarks;
       selectedAnswers.forEach((selectedAnswer, index) => {
         if (selectedAnswer === quizData.questions[index].correctAnswer) {
-          score += quizData.correctMarks;
+          score = +score + +correctMarks;
         } else {
-          score += quizData.incorrectMarks;
+          score = +score + +incorrectMarks;
         }
       });
       resolve(score);
@@ -91,6 +104,8 @@ const PlayQuiz: React.FC = () => {
     });
   };
 
+  if (!quizData) return <div>Loading...</div>;
+
   return (
     <div className="flex flex-col items-center text-gray-300">
       <div className="mb-8">
@@ -103,7 +118,7 @@ const PlayQuiz: React.FC = () => {
         <p className="text-xl text-center font-medium mt-6 text-gray-400">
           Marking Scheme
         </p>
-        <div className="flex flex-row items-center w-full justify-between text-gray-400">
+        <div className="flex flex-row items-center w-full justify-between text-gray-400 gap-8 mt-3">
           <span className="text-green-300">
             Correct Answer : {quizData.correctMarks}
           </span>

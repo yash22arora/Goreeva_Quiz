@@ -41,7 +41,6 @@ const BasicsForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     if (authCtx.user) {
-      console.log(auth.currentUser?.uid);
       setIsLoading(true);
       e.preventDefault();
       setDoc(doc(db, "quizzes", quizData.id), {
