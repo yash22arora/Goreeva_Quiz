@@ -8,6 +8,12 @@ import { auth } from "../../firebase.config";
 import { useHistory, useLocation } from "react-router-dom";
 import customToast from "../common/CustomToast/CustomToast";
 
+export const signInWithGoogle = () => {
+  const provider = new GoogleAuthProvider();
+
+  return signInWithPopup(auth, provider);
+};
+
 const LoginIcon = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const authCtx = useContext(AuthContext);
@@ -20,13 +26,8 @@ const LoginIcon = () => {
   };
 
   const handleLogin = () => {
-    const provider = new GoogleAuthProvider();
-
-    signInWithPopup(auth, provider)
+    signInWithGoogle()
       .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential!.accessToken;
         // The signed-in user info.
         const user = result.user;
         authCtx.login(user);
@@ -36,26 +37,10 @@ const LoginIcon = () => {
         customToast("Logged in successfully");
       })
       .catch((error) => {
-        // Handle Errors here.
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.customData.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
+        console.error(error);
         history.push("/");
       });
   };
-
-  useEffect(() => {
-    const pathnames = pathname.split("/");
-    if (pathnames.includes("create") || pathnames.includes("edit")) {
-      if (!authCtx.isLoggedIn) {
-        handleLogin();
-      }
-    }
-  }, [pathname, authCtx]);
 
   const MenuContent = () => {
     if (authCtx.isLoggedIn)

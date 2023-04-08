@@ -26,10 +26,10 @@ function App() {
             <Home />
           </Route>
           <Route path="/create">
-            <Create />
+            {authCtx.isLoggedIn ? <Create /> : <Redirect to="/" />}
           </Route>
           <Route path="/edit/:quizId">
-            <Edit />
+            {authCtx.isLoggedIn ? <Edit /> : <Redirect to="/" />}
           </Route>
           <Route path="/play/:quizId">
             <PlayQuiz />

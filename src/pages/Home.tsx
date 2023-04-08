@@ -1,15 +1,36 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import Input from "../components/common/Input/Input";
 import Button from "../components/common/Button/Button";
 import QuizList from "../components/Edit/QuizList/QuizList";
+import AuthContext from "../store/auth-context";
+import { signInWithGoogle } from "../components/Login/Login";
+import customToast from "../components/common/CustomToast/CustomToast";
 
 const Home: React.FC = () => {
   const [quizId, setQuizId] = useState<string>("");
   const history = useHistory();
+  const authCtx = useContext(AuthContext);
 
   const handleStart = () => {
     history.push(`/play/${quizId}`);
+  };
+
+  const handleCreate = () => {
+    if (authCtx.isLoggedIn) {
+      history.push("/create");
+    } else {
+      signInWithGoogle()
+        .then((result) => {
+          const user = result.user;
+          authCtx.login(user);
+          customToast("Logged in successfully");
+          history.push("/create");
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
 
   return (
@@ -39,9 +60,7 @@ const Home: React.FC = () => {
         <span className="mx-auto font-bold">OR</span>
         <Button
           className="w-full rounded-md py-4 bg-violet-700 hover:bg-violet-800 font-semibold "
-          onClick={() => {
-            history.push("/create");
-          }}
+          onClick={handleCreate}
         >
           Create
         </Button>
