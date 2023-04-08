@@ -85,7 +85,7 @@ const LoginIcon = () => {
   };
 
   return (
-    <div className="">
+    <div className="relative z-10">
       {isMenuOpen && (
         <div
           className="absolute w-screen h-screen"
@@ -94,7 +94,7 @@ const LoginIcon = () => {
           }}
         ></div>
       )}
-      <div className="absolute cursor-pointer right-8 top-8 ">
+      <div className="absolute cursor-pointer -right-6 -top-6 ">
         <div
           onClick={() => {
             setIsMenuOpen(!isMenuOpen);

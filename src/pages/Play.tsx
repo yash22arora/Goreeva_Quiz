@@ -15,6 +15,7 @@ const PlayQuiz: React.FC = () => {
       timeLimit: 1,
       id: "dfveveevv",
       questions: DUMMY_QUESTIONS,
+      ownerUid: "123",
     }),
     []
   );

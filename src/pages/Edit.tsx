@@ -2,15 +2,38 @@ import { useEffect, useState } from "react";
 import { IQuestion } from "../components/Edit/types";
 import Question from "../components/Edit/Question";
 import ShortUniqueId from "short-unique-id";
-import { DUMMY_QUESTIONS } from "../constants";
+import { CgSpinner } from "react-icons/cg";
+import { useHistory, useParams } from "react-router-dom";
+import {
+  getQuiZDatafromFirestore,
+  updateQuestionsonFirestore,
+} from "../utils/crud";
+import { TQuizData } from "../components/Create/BasicsForm/types";
 
 const Edit: React.FC = () => {
   const uid = new ShortUniqueId({ length: 10 });
-  const [questions, setQuestions] = useState<IQuestion[]>(DUMMY_QUESTIONS);
+  const [questions, setQuestions] = useState<IQuestion[]>([]);
+  const [quizData, setQuizData] = useState<TQuizData>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { quizId } = useParams<{
+    quizId: string;
+  }>();
+  const history = useHistory();
 
   const [errors, setErrors] = useState<{
     [key: string]: string;
   }>({});
+
+  useEffect(() => {
+    getQuiZDatafromFirestore(quizId).then((res) => {
+      if (res) {
+        setQuizData(res);
+        setQuestions(res.questions);
+      } else {
+        history.push("/");
+      }
+    });
+  }, [quizId]);
 
   const onEditQuestion = (question: IQuestion, id: number) => {
     const newQuestions = [...questions];
@@ -31,7 +54,6 @@ const Edit: React.FC = () => {
   };
 
   const onDeleteQuestion = (id: string) => {
-    console.log(id);
     let newQuestions = [...questions];
     newQuestions = newQuestions.filter((question) => question.id !== id);
     setQuestions(newQuestions);
@@ -39,6 +61,7 @@ const Edit: React.FC = () => {
 
   const onSave = () => {
     const errors: { [key: string]: string } = {};
+    setErrors({});
     let errorFlag = false;
     questions.forEach((question, index) => {
       if (question.correctAnswer === "") {
@@ -57,14 +80,59 @@ const Edit: React.FC = () => {
     setErrors(errors);
 
     if (!errorFlag) {
-      console.log("Save");
-      //make api request
+      setIsLoading(true);
+      const newQuizData = {
+        ...quizData,
+        questions,
+      };
+      updateQuestionsonFirestore(quizId, questions)
+        .then((res) => {
+          console.log("Saved!");
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
+  };
+
+  const copyCodeToClipboard = () => {
+    navigator.clipboard.writeText(quizId);
   };
 
   return (
     <div className="w-full h-full flex flex-col max-w-5xl mx-auto">
-      <div className="" id="quizHeader"></div>
+      <div
+        className="flex flex-col p-8 rounded-lg mb-4 w-full text-gray-300 bg-slate-600 bg-opacity-50 backdrop-blur-lg"
+        id="quizHeader"
+      >
+        <h1 className=" text-5xl text-center font-semibold mb-6">
+          Quiz ID:{" "}
+          <span
+            className="hover:underline underline-offset-4 cursor-copy"
+            onClick={copyCodeToClipboard}
+          >
+            {quizId}
+          </span>
+        </h1>
+        <h1 className="text-center font-semibold text-3xl">
+          {quizData?.quizName}
+        </h1>
+        <p className="text-center text-gray-400 text-xl my-3">
+          {quizData?.quizDescription}
+        </p>
+        <div className="grid grid-cols-3 mt-3 text-center">
+          <span className="text-lg font-medium">
+            Time Limit: {quizData?.timeLimit} mins
+          </span>
+          <span className="text-lg font-medium">
+            Correct Answer Marks: {quizData?.correctMarks} pts
+          </span>
+          <span className="text-lg font-medium">
+            Inorrect Answer Marks: {quizData?.incorrectMarks} pts
+          </span>
+        </div>
+      </div>
       <div className="flex flex-col gap-6">
         {questions.map((question, index) => {
           return (
@@ -84,11 +152,16 @@ const Edit: React.FC = () => {
         >
           Add Question
         </div>
-        <div>
+        <div className="ml-auto">
           <button
-            className="bg-violet-600 text-gray-300 font-bold text-2xl p-4"
+            className="bg-violet-600 text-gray-300 font-bold text-2xl px-6 py-2 rounded-sm flex flex-row items-center gap-2"
             onClick={onSave}
           >
+            {isLoading && (
+              <div className="animate-spin">
+                <CgSpinner />
+              </div>
+            )}
             Save
           </button>
         </div>

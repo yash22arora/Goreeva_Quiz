@@ -15,8 +15,8 @@ const Question: React.FC<IQuestionProps> = (props) => {
     question.answers
   );
   const [correctAnswer, setCorrectAnswer] = useState<
-    IQuestion["correctAnswer"] | null
-  >(isEdit ? null : question.correctAnswer);
+    IQuestion["correctAnswer"]
+  >(question.correctAnswer);
   const [selectedAnswer, setSelectedAnswer] = useState<string>("");
   const [prompt, setPrompt] = useState<IQuestion["prompt"]>(question.prompt);
 
@@ -28,7 +28,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
 
   useEffect(() => {
     setAnswers(question.answers);
-    setCorrectAnswer(isEdit ? null : question.correctAnswer);
+    setCorrectAnswer(question.correctAnswer);
     setPrompt(question.prompt);
     setSelectedAnswer("");
   }, [question]);
@@ -60,6 +60,7 @@ const Question: React.FC<IQuestionProps> = (props) => {
         {answers.map((answer, index) => {
           return (
             <Option
+              key={index}
               option={answer}
               id={index}
               selected={selectedAnswer === answer}
@@ -79,14 +80,20 @@ const Question: React.FC<IQuestionProps> = (props) => {
             <span>Correct Answer: </span>
             <select
               className="rounded-lg p-2 ml-4 bg-[rgb(113,79,168)] bg-opacity-60"
-              onChange={(e) => setCorrectAnswer(e.target.value)}
-              value={correctAnswer as string}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setCorrectAnswer(e.target.value);
+              }}
+              value={correctAnswer}
+              placeholder="Select a value"
             >
-              <option hidden selected>
-                Select Option
-              </option>
+              <option hidden>Select Option</option>
               {answers.map((answer, index) => {
-                return <option value={answer}>{answer}</option>;
+                return (
+                  <option value={answer} key={index}>
+                    {answer}
+                  </option>
+                );
               })}
             </select>
           </div>

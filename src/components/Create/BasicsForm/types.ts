@@ -11,4 +11,5 @@ export type TBasicQuestionInfo = {
 export interface TQuizData extends TBasicQuestionInfo {
   questions: IQuestion[];
   id: string;
+  ownerUid: string;
 }
