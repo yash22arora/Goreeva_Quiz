@@ -10,6 +10,7 @@ import {
 } from "../utils/crud";
 import { TQuizData } from "../components/Create/BasicsForm/types";
 import customToast from "../components/common/CustomToast/CustomToast";
+import { BiCopy } from "react-icons/bi";
 
 const Edit: React.FC = () => {
   const uid = new ShortUniqueId({ length: 10 });
@@ -69,6 +70,10 @@ const Edit: React.FC = () => {
         errors[question.id] = "Correct answer cannot be empty";
         errorFlag = true;
       }
+      if (new Set(question.answers).size !== question.answers.length) {
+        errors[question.id] = "Answers cannot be same";
+        errorFlag = true;
+      }
       if (question.answers.filter((answer) => answer === "").length > 0) {
         errors[question.id] = "Answers cannot be empty";
         errorFlag = true;
@@ -108,13 +113,14 @@ const Edit: React.FC = () => {
         className="flex flex-col p-8 rounded-lg mb-4 w-full text-gray-300 bg-slate-600 bg-opacity-50 backdrop-blur-lg"
         id="quizHeader"
       >
-        <h1 className=" text-5xl text-center font-semibold mb-6">
+        <h1 className=" text-5xl text-center flex flex-row items-center w-full justify-center font-semibold mb-6">
           Quiz ID:{" "}
           <span
-            className="hover:underline underline-offset-4 cursor-copy"
+            className="hover:underline underline-offset-4 cursor-copy flex flex-row items-center gap-4 ml-4"
             onClick={copyCodeToClipboard}
           >
             {quizId}
+            <BiCopy size={35} />
           </span>
         </h1>
         <h1 className="text-center font-semibold text-3xl">
