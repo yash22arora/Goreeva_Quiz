@@ -39,10 +39,34 @@ const BasicsForm: React.FC = () => {
     });
   };
 
+  const validateFields = () => {
+    if (quizData.quizName === "") {
+      customToast("Quiz name cannot be empty");
+      return false;
+    }
+    if (quizData.quizDescription === "") {
+      customToast("Quiz description cannot be empty");
+      return false;
+    }
+    if (quizData.correctMarks === 0) {
+      customToast("Correct marks cannot be empty");
+      return false;
+    }
+    if (quizData.incorrectMarks === null) {
+      customToast("Incorrect marks cannot be empty");
+      return false;
+    }
+    if (quizData.timeLimit === 0) {
+      customToast("Time limit must be >= 1 min");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    if (authCtx.user) {
+    e.preventDefault();
+    if (authCtx.user && validateFields()) {
       setIsLoading(true);
-      e.preventDefault();
       setDoc(doc(db, "quizzes", quizData.id), {
         ...quizData,
         ownerUid: authCtx.user.uid,

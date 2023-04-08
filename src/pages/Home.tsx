@@ -14,7 +14,7 @@ const Home: React.FC = () => {
   return (
     <div className="flex flex-col items-center text-gray-300 py-24">
       <h1 className="text-7xl font-semibold text-gray-300">
-        Welcome to Quizzy
+        Welcome to Quizzy 📝
       </h1>
       <p className="text-center text-lg mt-3">The simplest quiz app.</p>
 
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
             className="px-4 py-3"
           />
           <Button
-            className="px-6 py-3 bg-lime-300 disabled:bg-slate-500 disabled:cursor-not-allowed font-semibold text-slate-800 disabled:text-gray-300"
+            className="px-6 py-3 bg-orange-300 disabled:bg-slate-500 disabled:cursor-not-allowed font-semibold text-slate-800 disabled:text-gray-300"
             disabled={quizId.length !== 6}
             onClick={handleStart}
           >
