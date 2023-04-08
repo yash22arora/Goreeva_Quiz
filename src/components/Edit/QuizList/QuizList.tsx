@@ -15,7 +15,6 @@ const QuizList = () => {
       res.forEach((quiz) => {
         const quizData = quiz.data() as TQuizData;
         quizzesLocal.push(quizData);
-        console.log(quizzesLocal);
       });
       setQuizzes(quizzesLocal);
     });
