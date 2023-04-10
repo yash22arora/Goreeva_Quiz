@@ -169,11 +169,14 @@ const PlayQuiz: React.FC = () => {
               </h1>
               <div className="w-full my-3 max-w-4xl">
                 <ProgressBar
-                  completed={currentQuestion}
-                  total={quizData.questions.length}
+                  completed={timeLeft}
+                  total={quizData.timeLimit * 60}
                 />
               </div>
-              <div className="my-10 w-full max-w-4xl">
+              <h1 className="text-3xl font-semibold mt-3">
+                Q{currentQuestion + 1}/Q{quizData.questions.length}
+              </h1>
+              <div className="my-8 w-full max-w-4xl">
                 <Question
                   question={quizData.questions[currentQuestion]}
                   isEdit={false}
