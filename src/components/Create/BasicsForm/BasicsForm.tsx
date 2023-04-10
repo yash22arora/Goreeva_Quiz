@@ -88,9 +88,7 @@ const BasicsForm: React.FC = () => {
       className="flex flex-col items-start my-6 text-gray-300 relative top-1/2 left-1/2 -translate-x-1/2  w-1/2 gap-6"
       onSubmit={handleSubmit}
     >
-      <h2 className="text-3xl font-semibold my-4">
-        <span className="font-normal mr-4">1.</span> The Basics:
-      </h2>
+      <h2 className="text-3xl font-semibold my-4">The Basics:</h2>
       <div className="gap-2 flex flex-col w-full">
         <label className="text-xl font-semibold">Quiz name</label>
         <Input
